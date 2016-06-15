@@ -3,8 +3,8 @@ libs <- c("data.table")
 sapply(libs, library, character.only = T, logical.return = T, 
        quietly = T, warn.conflicts = F)
 
-load("reduced.Rdata")
-#a <- fread("train.csv")
+#load("reduced.Rdata")
+a <- fread("train.csv")
 
 metric <- function(pred, target){
     if(length(pred) != length(target)) stop("Different length of vectors")
@@ -33,6 +33,7 @@ for(i in 1:length(unique(a$Semana))){
     
     # Prediction
     answers <- predict(fit, test)
+    answers[which(answers < 0)] <- 0
     error[i] <- metric(answers, test$Demanda_uni_equil)
     time[i] <- Sys.time() - t
     
