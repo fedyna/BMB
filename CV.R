@@ -1,5 +1,5 @@
 # Uploading libraries
-libs <- c("data.table", "xgboost", "rpart")
+libs <- c("data.table", "xgboost", "rpart", "randomForest")
 sapply(libs, library, character.only = T, logical.return = T, 
        quietly = T, warn.conflicts = F)
 
@@ -16,6 +16,7 @@ error <- rep(0, length(unique(a$Semana)))
 time <- rep(0, length(unique(a$Semana)))
 a <- a[ , -c(7:10)]
 
+t <- Sys.time()
 for(i in 1:length(unique(a$Semana))){
     
     # Split data set
@@ -24,22 +25,20 @@ for(i in 1:length(unique(a$Semana))){
     trTest <- a[ind,]
     
     # Model building
-    t <- Sys.time()
-    
-    
+    fit <- randomForest(Demanda_uni_equil ~ ., trTrain, ntree = 500)
     
     # Prediction and evaluation
     answers <- predict(fit, trTest)
     answers[which(answers < 0)] <- 0
     error[i] <- metric(answers, trTest$Demanda_uni_equil)
-    time[i] <- Sys.time() - t
     
     print(i) # For progress control
     
 }
 
 summary(error)
-summary(time)
+time <- Sys.time() - t
+time
 
 
 
