@@ -1,12 +1,12 @@
 # Notes
 __________
 
-#### Benchmark
+#### Benchmark 
 0.96225
 
 __________
 
-#### Linear regression
+#### Linear regression?!
 ##### На маленьком наборе
 Min. 1st Qu.  Median    Mean 3rd Qu.    Max.
 
