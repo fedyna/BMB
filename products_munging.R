@@ -6,7 +6,7 @@ products <- read.csv("../producto_tabla.csv", stringsAsFactors = F)
 last.numbers <- sapply(products$NombreProducto, 
                        function(x) tail(unlist(strsplit(x, " ")), 1))
 last.numbers <- as.integer(last.numbers)
-sum(last.numbers - products$Producto_ID) 
+unique(last.numbers - products$Producto_ID) 
 # ZERO! So we can just remove all those last numbers
 products$NombreProducto <- gsub(' [0-9]+$', '', products$NombreProducto)
 
@@ -28,7 +28,7 @@ products$NombreProducto <- gsub("[[:upper:]* [[:upper:]]*$", "",
 
 # Here we read all numbers followed by letters
 k <- regmatches(products$NombreProducto, 
-                gregexpr("[0-9]+[a-z]+", products$NombreProducto))
+                gregexpr("[0-9]+[a-zA-Z]+", products$NombreProducto))
 # And remove all numbers
 k <- gsub("[0-9]+", "", k)
 # And finally have a look on what we have
@@ -37,10 +37,8 @@ unique(k)
 
 
 products$Weights <- as.character(regmatches(products$NombreProducto,
-                             gregexpr("[0-9]+g|[0-9]+Kg|
-                                      [0-9]+kg|[0-9]+gProm|[0-9]+oz",
-                                      products$NombreProducto)))
-
+        gregexpr("[0-9]+g|[0-9]+Kg|[0-9]+kg|[0-9]+gProm|[0-9]+oz", 
+                 products$NombreProducto)))
 
 # Now let us separate measurements
 products$Weights.measure <- gsub("[0-9]+", "", products$Weights)
@@ -73,7 +71,7 @@ products$Weights[1] <- 0
 
 
 nrow(products[which(products$Weights.measure == "character()"),])
-# [1] 64 !!!!! What are they?
+# [1] 108 !!!!! What are they?
 products[which(products$Weights.measure == "character()"),]
 
 #### WHY THERE IS "1kg" LEFT????!!
