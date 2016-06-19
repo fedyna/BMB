@@ -1,5 +1,5 @@
 # BMB
-Mine and Andrew's work
+Mine and Andrew's work (изучаем удаленную работу над проектом)
 
 #### Metric
 расчёт метрики
