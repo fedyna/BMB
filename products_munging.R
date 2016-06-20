@@ -1,5 +1,5 @@
 
-products <- read.csv("../producto_tabla.csv", stringsAsFactors = F)
+products <- read.csv("../BMB/producto_tabla.csv", stringsAsFactors = F)
 
 # Last numbers in NombreProducto look like Producto_ID
 # Let's check
@@ -36,43 +36,52 @@ unique(k)
 
 
 
-products$Weights <- as.character(regmatches(products$NombreProducto,
-        gregexpr("[0-9]+g|[0-9]+Kg|[0-9]+kg|[0-9]+gProm|[0-9]+oz", 
+products$WeightsVolumes <- as.character(regmatches(products$NombreProducto,
+        gregexpr("[0-9]+g|[0-9]+Kg|[0-9]+kg|[0-9]+gProm|[0-9]+oz|[0-9]+ml", 
                  products$NombreProducto)))
 
 # Now let us separate measurements
-products$Weights.measure <- gsub("[0-9]+", "", products$Weights)
+products$Measure <- gsub("[0-9]+", "", products$WeightsVolumes)
+products$Measure <- gsub("Kg", "kg", products$Measure)
+products$WeightsVolumes <- as.numeric(gsub("[^0-9]+", "", products$WeightsVolumes))
 
-unique(products$Weights.measure)
+
 # Dirty result! Let us clean it step by step
 ##1
-products$Weights.measure[which(products$Weights.measure == "gProm")] <- "g"
+products$Measure[which(products$Measure == "gProm")] <- "g"
 ##2
-products$Weights.measure[which(products$Weights.measure == "Kg")] <- "kg"
+#products$Weights.measure[which(products$Weights.measure == "Kg")] <- "kg"
 ##3
-products[which(products$Weights.measure == "c(\"g\", \"g\")"),]
+products[which(products$Measure == "c(\"g\", \"g\")"),]
 #412       30302 Tostado 210g y Cajeta Quemada 18g        BIM c(" 210g", " 18g")     c("g", "g")
 #obviously, Watson!
-products[which(products$Weights.measure == 
-                   "c(\"g\", \"g\")"),]$Weights <- "210g"
-products[which(products$Weights.measure == 
-                   "c(\"g\", \"g\")"),]$Weights.measure <- "g"
+products[which(products$Measure == 
+                   "c(\"g\", \"g\")"),]$WeightsVolumes <- "210"
+products[which(products$Measure == 
+                   "c(\"g\", \"g\")"),]$Measure <- "g"
 ##4
-products[which(products$Weights.measure == "c(\"g\", \"oz\")"),]
+products[which(products$Measure == "c(\"g\", \"oz\")"),]
 #163    2575 Vasos 226 8g8oz        NES c("8g", "8oz")    c("g", "oz")
 #nor so obvious, Watson! Let it be grams
-products[which(products$Weights.measure == 
-                   "c(\"g\", \"oz\")"),]$Weights <- "8g"
-products[which(products$Weights.measure == 
-                   "c(\"g\", \"oz\")"),]$Weights.measure <- "g"
+products[which(products$Measure == 
+                   "c(\"g\", \"oz\")"),]$WeightsVolumes <- "8"
+products[which(products$Measure == 
+                   "c(\"g\", \"oz\")"),]$Measure <- "g"
 ##5
-products$Weights.measure[1] <- "g"
-products$Weights[1] <- 0
+products$Measure[1] <- "g"
+products$WeightsVolumes[1] <- 0
 
+#changing kg to g
+products$WeightsVolumes <- as.numeric(products$WeightsVolumes)
+products[which(products$Measure == 'kg'),]$WeightsVolumes <- 
+        products[which(products$Measure == 'kg'),]$WeightsVolumes*1000
+products$Measure <- gsub('kg', 'g', products$Measure)
+unique(products$Measure)
+#now we have to solve with character()
 
-nrow(products[which(products$Weights.measure == "character()"),])
+nrow(products[which(products$Measure == "character()"),])
 # [1] 108 !!!!! What are they?
-products[which(products$Weights.measure == "character()"),]
+products[which(products$Measure == "character()"),]
 
 #### WHY THERE IS "1kg" LEFT????!!
 #### THE EXPRESSION IS CORRECT
