@@ -40,12 +40,13 @@ products$WeightsVolumes <- as.character(regmatches(products$NombreProducto,
         gregexpr("[0-9]+g|[0-9]+Kg|[0-9]+kg|[0-9]+gProm|[0-9]+oz|[0-9]+ml", 
                  products$NombreProducto)))
 
+
 # Now let us separate measurements
 products$Measure <- gsub("[0-9]+", "", products$WeightsVolumes)
 products$Measure <- gsub("Kg", "kg", products$Measure)
 products$WeightsVolumes <- as.numeric(gsub("[^0-9]+", "", products$WeightsVolumes))
 
-
+unique(products$Measure)
 # Dirty result! Let us clean it step by step
 ##1
 products$Measure[which(products$Measure == "gProm")] <- "g"
@@ -53,20 +54,18 @@ products$Measure[which(products$Measure == "gProm")] <- "g"
 #products$Weights.measure[which(products$Weights.measure == "Kg")] <- "kg"
 ##3
 products[which(products$Measure == "c(\"g\", \"g\")"),]
+txt2g <- products[which(products$Measure == 'c(\"g\", \"g\")'),]$NombreProducto
 #412       30302 Tostado 210g y Cajeta Quemada 18g        BIM c(" 210g", " 18g")     c("g", "g")
-#obviously, Watson!
-products[which(products$Measure == 
-                   "c(\"g\", \"g\")"),]$WeightsVolumes <- "210"
-products[which(products$Measure == 
-                   "c(\"g\", \"g\")"),]$Measure <- "g"
+products[which(products$Measure == "c(\"g\", \"g\")"),]$WeightsVolumes <- 
+        regmatches(txt2g, regexpr('[0-9]+', txt2g))
+#change all 'c(\"g\", \"g\")' to 'g'
+products[which(products$Measure == "c(\"g\", \"g\")"),]$Measure <- "g"
 ##4
 products[which(products$Measure == "c(\"g\", \"oz\")"),]
 #163    2575 Vasos 226 8g8oz        NES c("8g", "8oz")    c("g", "oz")
 #nor so obvious, Watson! Let it be grams
-products[which(products$Measure == 
-                   "c(\"g\", \"oz\")"),]$WeightsVolumes <- "8"
-products[which(products$Measure == 
-                   "c(\"g\", \"oz\")"),]$Measure <- "g"
+products[which(products$Measure == "c(\"g\", \"oz\")"),]$WeightsVolumes <- "8"
+products[which(products$Measure == "c(\"g\", \"oz\")"),]$Measure <- "g"
 ##5
 products$Measure[1] <- "g"
 products$WeightsVolumes[1] <- 0
