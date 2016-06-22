@@ -23,7 +23,9 @@ dt <- merge(dt, median_Client_Prod, all.x = TRUE)
 dt$M2 <- merge(dt, median_Prod, by = "Producto_ID", all.x = TRUE)$M2
 dt$Median <- dt$M3
 #DO WE NEED "ROUND" HERE?????
-dt[is.na(M3)]$Median <- round(submit[is.na(M3)]$M2)
-submit[is.na(Median)]$Median <- round(median)
+dt[is.na(M3)]$Median <- round(dt[is.na(M3)]$M2)
+dt[is.na(Median)]$Median <- round(median)
+
+dt <- dt[ ,`:=`(M3 = NULL, M2 = NULL)]
 
 save(dt, file = "f2_reduced.RData")
