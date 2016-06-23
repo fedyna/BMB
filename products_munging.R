@@ -37,7 +37,7 @@ unique(k)
 
 
 products$WeightsVolumes <- as.character(regmatches(products$NombreProducto,
-        gregexpr("[0-9]+g|[0-9]+Kg|[0-9]+kg|[0-9]+gProm|[0-9]+oz|[0-9]+ml", 
+        gregexpr("[0-9]+g|[0-9]+Kg|[0-9]+kg|[0-9]+gProm|[0-9]+oz|[0-9]+ml|[0-9]+ ml", 
                  products$NombreProducto)))
 
 
@@ -50,6 +50,7 @@ unique(products$Measure)
 # Dirty result! Let us clean it step by step
 ##1
 products$Measure[which(products$Measure == "gProm")] <- "g"
+products$Measure[which(products$Measure == " ml")] <- "ml"
 ##2
 #products$Weights.measure[which(products$Weights.measure == "Kg")] <- "kg"
 ##3
@@ -81,6 +82,42 @@ unique(products$Measure)
 nrow(products[which(products$Measure == "character()"),])
 # [1] 108 !!!!! What are they?
 products[which(products$Measure == "character()"),]
+
+#manually fix all empty (g, ml & others) producto
+products[which(products$NombreProducto == 'Paletina'),]$Measure <- "gds"
+products[which(products$NombreProducto == 'Camioncitos Bimbo'),]$Measure <- "gds"
+products[which(products$NombreProducto == 'Camioncito Bimbo Modelo 3'),]$Measure <- "gds"
+products[which(products$NombreProducto == 'Servilletero Bimbollos'),]$Measure <- "gds"
+products[which(products$NombreProducto == 'Tuinky Fresas con Crema 2p'),]$WeightsVolumes <- 38
+products[which(products$NombreProducto == 'Bollo Regular 2pq 30p Mc'),]$WeightsVolumes <- 1200
+products[which(products$NombreProducto == 'Donas 6P Prom'),]$WeightsVolumes <- 157.5
+products[which(products$NombreProducto == 'Doraditas 4p'),]$WeightsVolumes <- 110
+products[which(products$NombreProducto == 'Mantecadas Chocolate 3p'),]$WeightsVolumes <- 142.5
+products[which(products$NombreProducto == 'Mantecadas 2p'),]$WeightsVolumes <- 105
+products[which(products$NombreProducto == 'Rollo Fresa 2p 75'),]$WeightsVolumes <- 75
+products[which(products$NombreProducto == 'Leche Gansito Chocolate 24p'),]$WeightsVolumes <- 24*200
+products[which(products$NombreProducto == 'Empanaditas Pina 20p'),]$WeightsVolumes <- 506
+products[which(products$NombreProducto == 'Empanaditas Pina 20p Prom'),]$WeightsVolumes <- 506
+products[which(products$NombreProducto == 'Empanzador Crujiente Prom'),]$WeightsVolumes <- 175
+products[which(products$NombreProducto == 'Bran Frut Mix 20p'),]$WeightsVolumes <- 40
+products[which(products$NombreProducto == 'Bran Frut Mix 8p'),]$WeightsVolumes <- 40
+products[which(products$NombreProducto == 'Bran Frut Fresa 18p Prom'),]$WeightsVolumes <- 40
+products[which(products$NombreProducto == 'Barra Multigrano Nuez 12p Prom'),]$WeightsVolumes <- 408
+products[which(products$NombreProducto == 'Choco Roles Fresa 3X10 Prom'),]$WeightsVolumes <- 67
+products[which(products$NombreProducto == 'Pan Blanco Freihofers 28Reb'),]$WeightsVolumes <- 820
+products[which(products$NombreProducto == 'Pan Blanco Mrs Bairds 28Reb'),]$WeightsVolumes <- 820
+products[which(products$NombreProducto == 'Pan Blanco Stroehmann 28Reb'),]$WeightsVolumes <- 820
+products[which(products$NombreProducto == 'Pan Blanco Rainbo 28Reb'),]$WeightsVolumes <- 820
+products[which(products$NombreProducto == 'Pan Blanco Pullman 28Reb'),]$WeightsVolumes <- 820
+products[which(products$NombreProducto == 'Tarima Twin Pack Thins Multig'),]$WeightsVolumes <- 680
+products[which(products$NombreProducto == 'Choco Roles 15p Cj'),]$WeightsVolumes <- 5
+products[which(products$NombreProducto == 'Mantecadas 2p'),]$WeightsVolumes <- 105
+products[which(products$NombreProducto == 'Donas 6p Prom'),]$WeightsVolumes <- 158
+products[which(products$NombreProducto == 'Doraditas 4p'),]$WeightsVolumes <- 147
+products[which(products$NombreProducto == 'Mantecadas 2p'),]$WeightsVolumes <- 105
+products[which(products$NombreProducto == 'Multiempaque MiniDoraditas 270'),]$WeightsVolumes <- 270
+
+products$Measure[which(products$Measure == "character()")] <- "gg"
 
 #### WHY THERE IS "1kg" LEFT????!!
 #### THE EXPRESSION IS CORRECT
