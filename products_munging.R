@@ -54,17 +54,16 @@ products[which(products$TMP != "fix"),]$WeightsVolumes <- products[which(product
 
 # Now let us separate measurements
 products$Measure <- gsub("[0-9]+", "", products$WeightsVolumes)
+products$Measure <- gsub("[.]", "", products$Measure)
 products$Measure <- gsub("Kg", "kg", products$Measure)
-products$WeightsVolumes <- as.numeric(gsub("[^0-9]+", "", products$WeightsVolumes))
+products$WeightsVolumes <- gsub("[A-Za-z]+", "", products$WeightsVolumes)
 
 unique(products$Measure)
 # Dirty result! Let us clean it step by step
-##1
+
 products$Measure[which(products$Measure == "gProm")] <- "g"
 products$Measure[which(products$Measure == " ml")] <- "ml"
-##2
-#products$Weights.measure[which(products$Weights.measure == "Kg")] <- "kg"
-##3
+
 products[which(products$Measure == "c(\"g\", \"g\")"),]
 #412       30302 Tostado 210g y Cajeta Quemada 18g        BIM c(" 210g", " 18g")     c("g", "g")
 txt2g <- products[which(products$Measure == 'c(\"g\", \"g\")'),]$NombreProducto
@@ -72,27 +71,21 @@ products[which(products$Measure == "c(\"g\", \"g\")"),]$WeightsVolumes <-
         regmatches(txt2g, regexpr('[0-9]+', txt2g))
 #change all 'c(\"g\", \"g\")' to 'g'
 products[which(products$Measure == "c(\"g\", \"g\")"),]$Measure <- "g"
-##4
-products[which(products$Measure == "c(\"g\", \"oz\")"),]
-#163    2575 Vasos 226 8g8oz        NES c("8g", "8oz")    c("g", "oz")
-#nor so obvious, Watson! Let it be grams
-products[which(products$Measure == "c(\"g\", \"oz\")"),]$WeightsVolumes <- "8"
-products[which(products$Measure == "c(\"g\", \"oz\")"),]$Measure <- "g"
-##5
+
 products$Measure[1] <- "g"
 products$WeightsVolumes[1] <- 0
 
-#changing kg to g
+#change "kg" to "g"
 products$WeightsVolumes <- as.numeric(products$WeightsVolumes)
 products[which(products$Measure == 'kg'),]$WeightsVolumes <- 
         products[which(products$Measure == 'kg'),]$WeightsVolumes*1000
 products$Measure <- gsub('kg', 'g', products$Measure)
 unique(products$Measure)
-#now we have to solve with character()
 
+#now we have to solve with character()
 nrow(products[which(products$Measure == "character()"),])
-# [1] 108 !!!!! What are they?
-products[which(products$Measure == "character()"),]
+# [1] 50 !!!!! What are they?
+#products[which(products$Measure == "character()"),]
 
 #manually fix all empty (g, ml & others) producto 
 products[which(products$NombreProducto == 'Paletina'),]$Measure <- "gds"
@@ -138,7 +131,7 @@ products[which(products$NombreProducto == 'Tostada Ondulada Tubo 30p'),]$Weights
 
 products[which(products$NombreProducto == 'Leche Gansito Chocolate 24p'),]$WeightsVolumes <- 236
 products[which(products$NombreProducto == 'Leche Gansito Chocolate 24p'),]$Measure <- "ml"
-products$Measure[which(products$Measure == "character()")] <- "gg"
+products$Measure[which(products$Measure == "character()")] <- "g"
 
 # lets produce new column with number of the pieces
 products$Pieces <- as.character(regmatches(products$NombreProducto, 
@@ -146,7 +139,5 @@ products$Pieces <- as.character(regmatches(products$NombreProducto,
 products$Pieces <- sub("character\\(0\\)", "1p", products$Pieces)
 products$Pieces <- sub("p", "", products$Pieces)
 
-#### WHY THERE IS "1kg" LEFT????!!
-#### THE EXPRESSION IS CORRECT
-#### t <- "Tortillas Bolsa 2a 1kg"
-#### as.character(regmatches(t, gregexpr("[0-9]+kg",t)))
+# remove column TMP
+products <- products[,c(-5)]
