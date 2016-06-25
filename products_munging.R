@@ -44,6 +44,7 @@ products$WeightsVolumes <- as.character(regmatches(products$NombreProducto,
         gregexpr("[0-9]+g|[0-9]+Kg|[0-9]+kg|[0-9]+gProm|[0-9]+oz|[0-9]+ml|[0-9]+ ml", 
                         products$NombreProducto)))
 
+<<<<<<< HEAD
 products$TMP <- as.character(regmatches(products$NombreProducto,
         gregexpr(" [0-9]+ [0-9]+Kg| [0-9]+ [0-9]+g", products$NombreProducto)))
 #products$TMP <- sapply(products$TMP, function (x)  sub("^\\s+", "", x))
@@ -51,6 +52,12 @@ products$TMP <- sub("^\\s+", "", products$TMP)
 products$TMP <- sub("[[:space:]]", ".", products$TMP)
 products$TMP <- sub("character\\(0\\)", "fix", products$TMP)
 products[which(products$TMP != "fix"),]$WeightsVolumes <- products[which(products$TMP != "fix"),]$TMP
+=======
+
+products$Weights <- as.character(regmatches(products$NombreProducto,
+        gregexpr("[0-9]+g|[0-9]+Kg|[0-9]+kg|[0-9]+gProm|[0-9]+oz", 
+                 products$NombreProducto)))
+>>>>>>> upstream/master
 
 # Now let us separate measurements
 products$Measure <- gsub("[0-9]+", "", products$WeightsVolumes)
@@ -66,6 +73,7 @@ products$Measure[which(products$Measure == " ml")] <- "ml"
 
 products[which(products$Measure == "c(\"g\", \"g\")"),]
 #412       30302 Tostado 210g y Cajeta Quemada 18g        BIM c(" 210g", " 18g")     c("g", "g")
+<<<<<<< HEAD
 txt2g <- products[which(products$Measure == 'c(\"g\", \"g\")'),]$NombreProducto
 products[which(products$Measure == "c(\"g\", \"g\")"),]$WeightsVolumes <- 
         regmatches(txt2g, regexpr('[0-9]+', txt2g))
@@ -141,3 +149,31 @@ products$Pieces <- sub("p", "", products$Pieces)
 
 # remove column TMP
 products <- products[,c(-5)]
+=======
+#obviously, Watson!
+products[which(products$Weights.measure == 
+                   "c(\"g\", \"g\")"),]$Weights <- "210g"
+products[which(products$Weights.measure == 
+                   "c(\"g\", \"g\")"),]$Weights.measure <- "g"
+##4
+products[which(products$Weights.measure == "c(\"g\", \"oz\")"),]
+#163    2575 Vasos 226 8g8oz        NES c("8g", "8oz")    c("g", "oz")
+#nor so obvious, Watson! Let it be grams
+products[which(products$Weights.measure == 
+                   "c(\"g\", \"oz\")"),]$Weights <- "8g"
+products[which(products$Weights.measure == 
+                   "c(\"g\", \"oz\")"),]$Weights.measure <- "g"
+##5
+products$Weights.measure[1] <- "g"
+products$Weights[1] <- 0
+
+
+nrow(products[which(products$Weights.measure == "character()"),])
+# [1] 108 !!!!! What are they?
+products[which(products$Weights.measure == "character()"),]
+
+#### WHY THERE IS "1kg" LEFT????!!
+#### THE EXPRESSION IS CORRECT
+#### t <- "Tortillas Bolsa 2a 1kg"
+#### as.character(regmatches(t, gregexpr("[0-9]+kg",t)))
+>>>>>>> upstream/master
