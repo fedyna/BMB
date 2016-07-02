@@ -40,5 +40,9 @@ towns$Popul[which(towns$State == "BAJA CALIFORNIA SUR")] <- 32
 #how many different agencies passes at each address
 freqaddress <- as.data.frame(table(towns$Town))
 freqaddress$addnum <- as.numeric(sub(".*(\\d{4}).*", "\\1", freqaddress$Var1))
+save(freqaddress, file = "prepared_freq_address.RData")
 
 towns$addnum <- as.numeric(sub(".*(\\d{4}).*", "\\1", towns$Town))
+towns <- towns[,-c(2,3)]
+
+save(towns, file = "prepared_towns.RData")
