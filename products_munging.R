@@ -141,3 +141,9 @@ products$Pieces <- sub("p", "", products$Pieces)
 
 # remove column TMP
 products <- products[,c(-5)]
+
+# remove "gds"
+products <- products[complete.cases(products),]
+write.csv(products, 
+          paste(as.character(Sys.Date()), "products.csv", sep = ""), 
+          row.names = F)
